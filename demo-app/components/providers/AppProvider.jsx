@@ -12,9 +12,9 @@ export const useAppContext = () => {
     return context;
 };
 
-export const AppProvider = ({ children }) => {
+export const AppProvider = ({ children, initialActiveBorrower = null }) => {
     const [activeTab, setActiveTab] = useState('new');
-    const [activeBorrower, setActiveBorrower] = useState(null);
+    const [activeBorrower, setActiveBorrower] = useState(initialActiveBorrower);
     const [radioSelection, setRadioSelection] = useState('Option A');
 
     const contextValue = {

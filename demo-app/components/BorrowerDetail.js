@@ -1,13 +1,28 @@
-"use client"
+"use client";
 
-import {useState} from "react";
+import { useState } from "react";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import {formatCurrency, getStatusBadgeVariant, mockBorrowerDetails} from "@/utils/data/data";
-import {AlertTriangle, CheckCircle, ChevronDown, ChevronRight, FileText, Send, Phone, XCircle, Mail, User} from "lucide-react";
+import {
+    formatCurrency,
+    getStatusBadgeVariant,
+    mockBorrowerDetails,
+} from "@/utils/data/data";
+import {
+    AlertTriangle,
+    CheckCircle,
+    ChevronDown,
+    ChevronRight,
+    FileText,
+    Send,
+    Phone,
+    XCircle,
+    Mail,
+    User,
+} from "lucide-react";
 import Button from "@/components/ui/Button";
 import LoanSummaryCard from "@/components/LoanSummaryCard";
-import {useAppContext} from "@/components/providers/AppProvider";
+import { useAppContext } from "@/components/providers/AppProvider";
 import notifications from "@/components/alerts/alerts";
 
 const BorrowerDetail = () => {
@@ -15,33 +30,30 @@ const BorrowerDetail = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [aiExplainabilityOpen, setAiExplainabilityOpen] = useState(false);
 
-    // Get detailed borrower info
-    const borrowerDetail = activeBorrower ? mockBorrowerDetails[activeBorrower] : null;
+    const borrowerDetail = activeBorrower
+        ? mockBorrowerDetails[activeBorrower]
+        : null;
 
-    // Mock API call functions
     const handleRequestDocuments = async () => {
         setIsLoading(true);
-        // POST /api/borrowers/{id}/request-documents
         setTimeout(() => {
-            notifications.success('Documents requested successfully');
+            notifications.success("Documents requested successfully");
             setIsLoading(false);
         }, 1000);
     };
 
     const handleSendToValuer = async () => {
         setIsLoading(true);
-        // POST /api/borrowers/{id}/send-valuer
         setTimeout(() => {
-            notifications.success('Valuer notified successfully');
+            notifications.success("Valuer notified successfully");
             setIsLoading(false);
         }, 1000);
     };
 
     const handleApprove = async () => {
         setIsLoading(true);
-        // POST /api/borrowers/{id}/approve
         setTimeout(() => {
-            notifications.success('Loan approved successfully');
+            notifications.success("Loan approved successfully");
             setIsLoading(false);
         }, 1000);
     };
@@ -60,12 +72,14 @@ const BorrowerDetail = () => {
     }
 
     return (
-        <Card className="p-6">
+        <Card className="p-6" data-testid="borrower-detail-card">
             {/* Header */}
             <div className="mb-6 pb-4 border-b border-gray-200">
                 <div className="flex items-start justify-between mb-3">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">{borrowerDetail.name}</h2>
+                        <h2 className="text-xl font-bold text-gray-900">
+                            {borrowerDetail.name}
+                        </h2>
                         <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
                             <div className="flex items-center space-x-1">
                                 <Mail className="w-4 h-4" />
@@ -80,8 +94,13 @@ const BorrowerDetail = () => {
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-2xl font-bold text-gray-900">{formatCurrency(borrowerDetail.loan_amount)}</p>
-                        <Badge variant={getStatusBadgeVariant(borrowerDetail.status)}>
+                        <p className="text-2xl font-bold text-gray-900">
+                            {formatCurrency(borrowerDetail.loan_amount)}
+                        </p>
+                        <Badge
+                            variant={getStatusBadgeVariant(borrowerDetail.status)}
+                            data-testid="borrower-status-badge"
+                        >
                             {borrowerDetail.status}
                         </Badge>
                     </div>
@@ -92,22 +111,33 @@ const BorrowerDetail = () => {
             {borrowerDetail.ai_flags && borrowerDetail.ai_flags.length > 0 && (
                 <div className="mb-6">
                     <button
+                        data-testid="ai-explainability-button"
                         onClick={() => setAiExplainabilityOpen(!aiExplainabilityOpen)}
                         className="flex items-center justify-between w-full p-4 bg-red-50 border border-red-200 rounded-lg"
                     >
                         <div className="flex items-center">
                             <AlertTriangle className="w-5 h-5 text-red-600 mr-2" />
-                            <span className="font-medium text-red-900">AI Explainability ({borrowerDetail.ai_flags.length})</span>
+                            <span className="font-medium text-red-900">
+                AI Explainability ({borrowerDetail.ai_flags.length})
+              </span>
                         </div>
-                        {aiExplainabilityOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                        {aiExplainabilityOpen ? (
+                            <ChevronDown className="w-4 h-4" />
+                        ) : (
+                            <ChevronRight className="w-4 h-4" />
+                        )}
                     </button>
 
                     {aiExplainabilityOpen && (
-                        <div className="mt-2">
+                        <div className="mt-2" data-testid="ai-explainability-content">
                             {borrowerDetail.ai_flags.length > 0 ? (
                                 <div className="space-y-2">
                                     {borrowerDetail.ai_flags.map((flag, index) => (
-                                        <div key={index} className="flex items-center space-x-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <div
+                                            key={index}
+                                            data-testid="ai-flag-item"
+                                            className="flex items-center space-x-3 p-3 bg-red-50 border border-red-200 rounded-lg"
+                                        >
                                             <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                                             <span className="text-sm text-red-800">{flag}</span>
                                         </div>
@@ -116,7 +146,9 @@ const BorrowerDetail = () => {
                             ) : (
                                 <div className="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                                     <CheckCircle className="w-5 h-5 text-green-500" />
-                                    <span className="text-sm text-green-800">No issues detected</span>
+                                    <span className="text-sm text-green-800">
+                    No issues detected
+                  </span>
                                 </div>
                             )}
                         </div>
@@ -127,6 +159,7 @@ const BorrowerDetail = () => {
             {/* Action Buttons */}
             <div className="mb-6 flex flex-wrap gap-2">
                 <Button
+                    data-testid="request-documents-button"
                     variant="outline"
                     size="sm"
                     onClick={handleRequestDocuments}
@@ -136,6 +169,7 @@ const BorrowerDetail = () => {
                     Request Documents
                 </Button>
                 <Button
+                    data-testid="send-to-valuer-button"
                     variant="outline"
                     size="sm"
                     onClick={handleSendToValuer}
@@ -145,6 +179,7 @@ const BorrowerDetail = () => {
                     Send to Valuer
                 </Button>
                 <Button
+                    data-testid="approve-button"
                     variant="primary"
                     size="sm"
                     onClick={handleApprove}
@@ -156,9 +191,9 @@ const BorrowerDetail = () => {
             </div>
 
             {/* Loan Summary */}
-            <LoanSummaryCard
-                borrowerData={borrowerDetail}
-            />
+            <div data-testid="loan-summary">
+                <LoanSummaryCard borrowerData={borrowerDetail} />
+            </div>
         </Card>
     );
 };
